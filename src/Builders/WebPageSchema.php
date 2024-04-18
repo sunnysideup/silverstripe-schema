@@ -31,8 +31,8 @@ class WebPageSchema extends SchemaBuilder
         $webpage->name($page->Title);
         $webpage->url($page->AbsoluteLink());
         $webpage->id($page->AbsoluteLink());
-        $webpage->dateCreated(new DateTimeImmutable($page->Created));
-        $webpage->dateModified(new DateTimeImmutable($page->LastEdited));
+        $webpage->dateCreated(new DateTimeImmutable((string) $page->Created));
+        $webpage->dateModified(new DateTimeImmutable((string) $page->LastEdited));
         $webpage->description($page->MetaDescription);
         $webpage->inLanguage(i18n::get_locale());
 
