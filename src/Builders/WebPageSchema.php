@@ -28,7 +28,7 @@ class WebPageSchema extends SchemaBuilder
     {
 
         $webpage = new WebPage();
-        $webpage->name($page->Title);
+        $webpage->name(json_encode($page->Title));
         $webpage->url($page->AbsoluteLink());
         $webpage->id($page->AbsoluteLink());
         $webpage->dateCreated(new DateTimeImmutable((string) $page->Created));

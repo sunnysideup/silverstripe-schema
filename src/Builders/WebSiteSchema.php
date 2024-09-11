@@ -26,10 +26,10 @@ class WebSiteSchema extends SchemaBuilder
      **/
     public function getSchema($page): ?SchemaOrgWebSite
     {
-        if($page->URLSegment === 'home') {
+        if ($page->URLSegment === 'home') {
             $siteConfig = SiteConfig::current_site_config();
             $website = new SchemaOrgWebSite();
-            $website->name($siteConfig->Title);
+            $website->name(json_encode($siteConfig->Title));
             $website->url(Director::absoluteBaseURL());
 
             return $website;

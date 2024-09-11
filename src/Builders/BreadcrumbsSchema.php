@@ -9,6 +9,7 @@
 namespace Broarm\Schema\Builders;
 
 use Broarm\Schema\SchemaBuilder;
+use SilverStripe\Core\Convert;
 use Spatie\SchemaOrg\BreadcrumbList;
 use Spatie\SchemaOrg\ListItem;
 
@@ -32,7 +33,7 @@ class BreadcrumbsSchema extends SchemaBuilder
             foreach ($breadcrumbList as $pos => $page) {
                 $breadcrumb = new ListItem();
                 $breadcrumb->item((new WebPageSchema())->getSchema($page));
-                $breadcrumb->name($page->Title);
+                $breadcrumb->name(json_encode($page->Title));
                 $breadcrumb->position($pos + 1);
                 $breadcrumbs[] = $breadcrumb;
             }
