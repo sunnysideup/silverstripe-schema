@@ -33,7 +33,7 @@ class BreadcrumbsSchema extends SchemaBuilder
             foreach ($breadcrumbList as $pos => $page) {
                 $breadcrumb = new ListItem();
                 $breadcrumb->item((new WebPageSchema())->getSchema($page));
-                $breadcrumb->name(Convert::raw2att($page->Title));
+                $breadcrumb->name($this->escapeJson($page->Title));
                 $breadcrumb->position($pos + 1);
                 $breadcrumbs[] = $breadcrumb;
             }

@@ -30,7 +30,7 @@ class WebSiteSchema extends SchemaBuilder
         if ($page->URLSegment === 'home') {
             $siteConfig = SiteConfig::current_site_config();
             $website = new SchemaOrgWebSite();
-            $website->name(Convert::raw2att($siteConfig->Title));
+            $website->name($this->escapeJson($siteConfig->Title));
             $website->url(Director::absoluteBaseURL());
 
             return $website;

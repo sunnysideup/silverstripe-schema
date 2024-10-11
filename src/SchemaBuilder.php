@@ -34,17 +34,17 @@ abstract class SchemaBuilder implements Flushable
         $schemaClassName = get_class($this);
         $schema = self::get_schema_from_cache($objectClassName, $objectId, $schemaClassName);
         $array = null;
-        if($schema === null) {
+        if ($schema === null) {
             $schema = $this->getSchema($page);
-            if($schema && is_array($schema) === false) {
+            if ($schema && is_array($schema) === false) {
                 $array = $schema->toArray();
-            } elseif($schema) {
+            } elseif ($schema) {
                 $array = $schema;
             } else {
                 $array = null;
             }
             self::set_schema_in_cache($objectClassName, $objectId, $schemaClassName, $array);
-        } elseif(is_array($schema)) {
+        } elseif (is_array($schema)) {
             $array = $schema;
         }
         return $array;
@@ -61,7 +61,7 @@ abstract class SchemaBuilder implements Flushable
         $key = self::make_cache_key($objectClassName, $objectId, $schemaClassName);
         /** @var CacheInterface $cache */
         $cache = Injector::inst()->get(CacheInterface::class . '.schema_org');
-        if((bool) $cache->has($key) !== false) {
+        if ((bool) $cache->has($key) !== false) {
             $return = unserialize((string) $cache->get($key));
             return is_array($return) ? $return : null;
         }
@@ -87,6 +87,14 @@ abstract class SchemaBuilder implements Flushable
     public static function make_cache_key(string $objectClassName, int $objectId, string $schemaClassName): string
     {
         return str_replace('\\', '-', $objectClassName . '_' . $objectId . '_' . $schemaClassName);
+    }
+
+    public function escapeJson($string): string
+    {
+        $string = (string) $string;
+        $string = json_encode($string, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS);
+        $string = trim($string, '"');
+        return $string;
     }
 
     public static function flush()
