@@ -10,6 +10,7 @@ namespace Broarm\Schema\Builders;
 
 use Broarm\Schema\SchemaBuilder;
 use DateTimeImmutable;
+use SilverStripe\Core\Convert;
 use SilverStripe\i18n\i18n;
 use Spatie\SchemaOrg\WebPage;
 
@@ -28,7 +29,7 @@ class WebPageSchema extends SchemaBuilder
     {
 
         $webpage = new WebPage();
-        $webpage->name(json_encode($page->Title));
+        $webpage->name(Convert::raw2att($page->Title));
         $webpage->url($page->AbsoluteLink());
         $webpage->id($page->AbsoluteLink());
         $webpage->dateCreated(new DateTimeImmutable((string) $page->Created));

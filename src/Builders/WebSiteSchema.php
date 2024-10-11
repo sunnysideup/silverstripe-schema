@@ -10,6 +10,7 @@ namespace Broarm\Schema\Builders;
 
 use Broarm\Schema\SchemaBuilder;
 use SilverStripe\Control\Director;
+use SilverStripe\Core\Convert;
 use SilverStripe\SiteConfig\SiteConfig;
 use Spatie\SchemaOrg\WebSite as SchemaOrgWebSite;
 
@@ -29,7 +30,7 @@ class WebSiteSchema extends SchemaBuilder
         if ($page->URLSegment === 'home') {
             $siteConfig = SiteConfig::current_site_config();
             $website = new SchemaOrgWebSite();
-            $website->name(json_encode($siteConfig->Title));
+            $website->name(Convert::raw2att($siteConfig->Title));
             $website->url(Director::absoluteBaseURL());
 
             return $website;
