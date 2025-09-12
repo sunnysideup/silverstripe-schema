@@ -3,10 +3,10 @@
 namespace Broarm\Schema;
 
 use Broarm\Schema\Builder\SchemaBuilder;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\View\Requirements;
 
-class SchemaExtension extends DataExtension
+class SchemaExtension extends Extension
 {
     /**
      * Hook onto the page meta tags and append any configured schema objects
@@ -14,7 +14,7 @@ class SchemaExtension extends DataExtension
      *
      * @param $tags
      */
-    public function MetaTags(&$tags)
+    public function updateMetaTags(&$tags)
     {
         $schemas = array_filter($this->owner->config()->get('active_schema'));
         foreach ($schemas as $schema) {
