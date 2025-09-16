@@ -2,7 +2,8 @@
 
 namespace Broarm\Schema\Type;
 
-use SilverStripe\ORM\ArrayList;
+
+use SilverStripe\Model\List\ArrayList;
 
 class BreadcrumbListSchema extends SchemaType
 {
