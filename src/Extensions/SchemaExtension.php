@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SchemaExtension.php
  *
@@ -11,11 +12,11 @@ namespace Broarm\Schema;
 use Broarm\Schema\SchemaBuilder;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
-use SilverStripe\Core\Convert;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
-use SilverStripe\ORM\FieldType\DBVarchar;
+use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
-use Spatie\SchemaOrg\BaseType;
 
 /**
  * SchemaExtension
@@ -36,32 +37,32 @@ class SchemaExtension extends DataExtension
     public function MetaTags(&$tags)
     {
         $curr = Controller::curr();
-        if($curr) {
+        if ($curr) {
             $request = Controller::curr()->getRequest();
-            if($request) {
-                if($request->isAjax()) {
+            if ($request) {
+                if ($request->isAjax()) {
                     return;
                 }
-                if($request->param('Action')) {
+                if ($request->param('Action')) {
                     return;
                 }
                 $postVars = $request->postVars();
-                if(! empty($postVars)) {
+                if (! empty($postVars)) {
                     return;
                 }
                 $getVars = $request->getVars();
-                if(! empty($getVars)) {
-                    if(count($_GET) > 1) {
+                if (! empty($getVars)) {
+                    if (count($_GET) > 1) {
                         return;
                     } else {
-                        if(!empty(array_intersect(array_keys($getVars), Config::inst()->get(static::class, 'exempted_get_vars')))) {
+                        if (!empty(array_intersect(array_keys($getVars), Config::inst()->get(static::class, 'exempted_get_vars')))) {
                             return;
                         }
                     }
                 }
                 $schemaBuilders = $this->getSchemasOrg();
                 /** @var SchemaBuilder $schemaBuilder */
-                foreach($schemaBuilders as $schemaBuilder) {
+                foreach ($schemaBuilders as $schemaBuilder) {
                     $this->appendSchemaOrg($tags, $schemaBuilder);
                 }
             }
@@ -80,7 +81,7 @@ class SchemaExtension extends DataExtension
         if ($schemaBuilder) {
             $owner = $this->getOwner();
             $array = $schemaBuilder->getSchemaFromCache($owner);
-            if(!empty($array)) {
+            if (!empty($array)) {
                 $string = str_replace('$', '&#36;', json_encode($array, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 Requirements::insertHeadTags(
                     '<script type="application/ld+json">' . $string . '</script>',
@@ -100,7 +101,7 @@ class SchemaExtension extends DataExtension
         $array = [];
         $schemas = array_filter($this->owner->config()->get('active_schema'));
         foreach ($schemas as $schema) {
-            if(class_exists($schema)) {
+            if (class_exists($schema)) {
                 $schemaBuilder = new $schema();
                 if ($schemaBuilder instanceof SchemaBuilder) {
                     $array[$schema] = $schemaBuilder;
@@ -112,7 +113,34 @@ class SchemaExtension extends DataExtension
 
     public function onAfterWrite()
     {
+        $owner = $this->getOwner();
+        if (! $owner->hasExtension(Versioned::class)) {
+            SchemaBuilder::clear_schema_cache();
+        }
+    }
+
+    public function onAfterPublish()
+    {
         SchemaBuilder::clear_schema_cache();
+    }
+
+    public function updateCMSFields(FieldList $fields)
+    {
+        $fields->addFieldsToTab(
+            'Root.Schema',
+            [
+                LiteralField::create(
+                    'SchemaTestLinkNice',
+                    '<p><a href="' . $this->getSchemaTestLink() . '" target="_blank" rel="noopener noreferrer">Review Schema for ' . $this->getOwner()->Title . '</a></p>'
+                )
+            ]
+        );
+    }
+
+    public function getSchemaTestLink(): string
+    {
+        return 'https://validator.schema.org/#' . urlencode($this->getOwner()->AbsoluteLink());
+
     }
 
 
