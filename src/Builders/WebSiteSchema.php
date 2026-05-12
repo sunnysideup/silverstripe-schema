@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Website.php
  *
@@ -10,7 +11,6 @@ namespace Broarm\Schema\Builders;
 
 use Broarm\Schema\SchemaBuilder;
 use SilverStripe\Control\Director;
-use SilverStripe\Core\Convert;
 use SilverStripe\SiteConfig\SiteConfig;
 use Spatie\SchemaOrg\WebSite as SchemaOrgWebSite;
 

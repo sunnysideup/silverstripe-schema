@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Website.php
  *
@@ -10,7 +11,6 @@ namespace Broarm\Schema\Builders;
 
 use Broarm\Schema\SchemaBuilder;
 use DateTimeImmutable;
-use SilverStripe\Core\Convert;
 use SilverStripe\i18n\i18n;
 use Spatie\SchemaOrg\WebPage;
 
