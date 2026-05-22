@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SchemaBuilder.php
  *
@@ -9,6 +10,7 @@
 namespace Broarm\Schema;
 
 use Psr\SimpleCache\CacheInterface;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Flushable;
 use SilverStripe\Core\Injector\Injector;
 use Spatie\SchemaOrg\Base;
@@ -101,5 +103,25 @@ abstract class SchemaBuilder implements Flushable
     {
         self::clear_schema_cache();
     }
+
+    public function getInfoLink($object): ?string
+    {
+        $infoLink = '';
+        $test = $this->getSchema($object);
+        if ($test) {
+            $testClassName = get_class($test);
+            if ($testClassName) {
+                $shortClassName = ClassInfo::shortName($testClassName);
+                $infoLinkUrl = 'https://schema.org/' . $shortClassName;
+                $infoLink = '<a href="' . $infoLinkUrl . '"  target="_blank" rel="noopener noreferrer">' . $shortClassName . '</a>';
+                return $infoLink;
+            } else {
+                return 'Error: could not generate schema';
+            }
+        }
+        return null;
+    }
+
+
 
 }
