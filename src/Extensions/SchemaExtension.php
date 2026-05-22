@@ -126,13 +126,22 @@ class SchemaExtension extends DataExtension
 
     public function updateCMSFields(FieldList $fields)
     {
+
         $fields->addFieldsToTab(
             'Root.Schema',
             [
                 LiteralField::create(
-                    'SchemaTestLinkNice',
+                    'SchemaDotOrgTestLinkNice',
                     '<p><a href="' . $this->getSchemaTestLink() . '" target="_blank" rel="noopener noreferrer">Review Schema for ' . $this->getOwner()->Title . '</a></p>'
-                )
+                ),
+                LiteralField::create(
+                    'SchemaDotOrgPrintOutTypes',
+                    '<h2>Schema Types</h2><pre>' . json_encode($this->getSchemasOrg(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
+                ),
+                LiteralField::create(
+                    'SchemaDotOrgPrintOutDetails',
+                    '<h2>Schema Details</h2><pre>' . json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
+                ),
             ]
         );
     }
@@ -143,5 +152,30 @@ class SchemaExtension extends DataExtension
 
     }
 
+    protected function getSchemaOrgTestData() : array
+    {
+        $owner = $this->getOwner();
+        $all = [];
+        $schemaBuilders = $this->getSchemasOrg();
+        /** @var SchemaBuilder $schemaBuilder */
+        foreach ($schemaBuilders as $schemaBuilder) {
+            if ($schemaBuilder) {
+                $array = $schemaBuilder->getSchema($owner);
+                if (!empty($array)) {
+                    $all[] = $array;
+
+                }
+            }
+        }
+        return $all;
+    }
+
+    protected function todo()
+    {
+
+    }
+
 
 }
+
+
