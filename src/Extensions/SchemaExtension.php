@@ -18,6 +18,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
+use Sunnysideup\ArrayToUl\View\ExpandableArrayList;
 
 /**
  * SchemaExtension
@@ -97,19 +98,34 @@ class SchemaExtension extends DataExtension
      *
      * @return SchemaBuilder[]
      */
-    public function getSchemasOrg()
+    public function getSchemasOrg(): array
     {
         $array = [];
-        $schemas = array_filter($this->owner->config()->get('active_schema'));
+        $schemas = array_filter($this->getOwner()->config()->get('active_schema'));
         foreach ($schemas as $schema) {
             if (class_exists($schema)) {
                 $schemaBuilder = new $schema();
                 if ($schemaBuilder instanceof SchemaBuilder) {
                     $array[$schema] = $schemaBuilder;
                 }
+            } else {
+                user_error('Schema class ' . $schema . ' does not exist', E_USER_WARNING);
             }
         }
         return $array;
+    }
+
+    public function getSchemaOrgHumanReadable(): array
+    {
+        $list = [];
+        $schemaBuilders = $this->getSchemasOrg();
+        foreach ($schemaBuilders as $schemaBuilderObject) {
+            $v = $schemaBuilderObject->getInfoLink($this->getOwner());
+            if ($v) {
+                $list[] = $v;
+            }
+        }
+        return $list;
     }
 
     public function onAfterWrite()
@@ -133,15 +149,15 @@ class SchemaExtension extends DataExtension
             [
                 LiteralField::create(
                     'SchemaDotOrgTestLinkNice',
-                    '<p><a href="' . $this->getSchemaTestLink() . '" target="_blank" rel="noopener noreferrer">Review Schema for ' . $this->getOwner()->Title . '</a></p>'
+                    '<p><h2>Review actual data</h2><a href="' . $this->getSchemaTestLink() . '" target="_blank" rel="noopener noreferrer">Review Schema for ' . $this->getOwner()->Title . '</a></p>'
                 ),
                 LiteralField::create(
                     'SchemaDotOrgPrintOutTypes',
-                    '<h2>Schema Types</h2><pre>' . json_encode($this->getSchemasOrg(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
+                    '<h2 style="margin-top: 20px">Schema Types</h2>' . ExpandableArrayList::create($this->getSchemaOrgHumanReadable())->setAllowHtmlAsIs(true)->forTemplate()
                 ),
                 LiteralField::create(
                     'SchemaDotOrgPrintOutDetails',
-                    '<h2>Schema Details</h2><pre>' . json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
+                    '<h2 style="margin-top: 20px">List of Actual Data</h2><pre>' . json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
                 ),
             ]
         );
