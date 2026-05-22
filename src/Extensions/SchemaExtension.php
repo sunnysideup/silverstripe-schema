@@ -13,6 +13,7 @@ use Broarm\Schema\SchemaBuilder;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Versioned\Versioned;
@@ -152,7 +153,7 @@ class SchemaExtension extends DataExtension
 
     }
 
-    protected function getSchemaOrgTestData() : array
+    protected function getSchemaOrgTestData(): array
     {
         $owner = $this->getOwner();
         $all = [];
@@ -177,5 +178,3 @@ class SchemaExtension extends DataExtension
 
 
 }
-
-
