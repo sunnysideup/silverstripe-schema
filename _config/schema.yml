@@ -30,6 +30,7 @@ Page:
 
 Broarm\Schema\ComposerCleanup\SpatieCleanup:
   keep_files:
+
     # contracts
     - 'vendor/spatie/schema-org/src/Contracts/ItemListContract.php'
     - 'vendor/spatie/schema-org/src/Contracts/IntangibleContract.php'
