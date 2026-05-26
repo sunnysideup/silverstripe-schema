@@ -16,6 +16,7 @@ use RecursiveIteratorIterator;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Core\Environment;
 use SilverStripe\Core\Flushable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\DB;
@@ -50,6 +51,12 @@ class SpatieCleanup implements Flushable
 
     public static function flush()
     {
+        if (Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES') === 'true') {
+            if (self::DEBUG) {
+                DB::alteration_message('Keeping files as per environment variable', 'created');
+            }
+            return;
+        }
         $config = self::config();
         $foldersToDelete = self::get_real_paths($config->get('folders_to_delete'));
         $keepFolders = self::get_real_paths($config->get('keep_folders'));
