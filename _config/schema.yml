@@ -8,14 +8,29 @@ SilverStripe\Core\Injector\Injector:
       namespace: 'schema_org'
     defaultLifetime: 864000
 
+##########################
+## # Home Page Only
+##########################
+
+# MyHomePage:
+#   active_schema:
+#     - 'Broarm\Schema\Builders\WebSiteSchema'
+
+
+##########################
+## # All Pages
+##########################
+
+
 Page:
   # default_image: 'path/to/logo.png'
   extensions:
     - 'Broarm\Schema\SchemaExtension'
   active_schema:
-    - 'Broarm\Schema\Builders\WebSiteSchema'
+    # - 'Broarm\Schema\Builders\WebSiteSchema'
     - 'Broarm\Schema\Builders\WebPageSchema'
     - 'Broarm\Schema\Builders\BreadcrumbsSchema'
+
 ##########################
 # ## Other Pages
 ##########################
@@ -39,6 +54,10 @@ Broarm\Schema\ComposerCleanup\SpatieCleanup:
     - 'vendor/spatie/schema-org/src/Contracts/ArticleContract.php'
     - 'vendor/spatie/schema-org/src/Contracts/CreativeWorkContract.php'
     - 'vendor/spatie/schema-org/src/Contracts/StructuredValueContract.php'
+    - 'vendor/spatie/schema-org/src/SearchAction.php'
+    - 'vendor/spatie/schema-org/src/AboutPage.php'
+    - 'vendor/spatie/schema-org/src/WebPage.php'
+    - 'vendor/spatie/schema-org/src/WebSite.php'
 
 #     -  'vendor/spatie/schema-org/src/AboutPage.php'
 #     -  'vendor/spatie/schema-org/src/AcceptAction.php'
