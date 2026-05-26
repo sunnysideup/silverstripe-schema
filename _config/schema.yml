@@ -58,6 +58,7 @@ Broarm\Schema\ComposerCleanup\SpatieCleanup:
     - 'vendor/spatie/schema-org/src/AboutPage.php'
     - 'vendor/spatie/schema-org/src/WebPage.php'
     - 'vendor/spatie/schema-org/src/WebSite.php'
+    - 'vendor/spatie/schema-org/src/CollectionPage.php'
 
 #     -  'vendor/spatie/schema-org/src/AboutPage.php'
 #     -  'vendor/spatie/schema-org/src/AcceptAction.php'

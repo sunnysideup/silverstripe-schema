@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SchemaBuilder.php
  *
@@ -29,6 +30,7 @@ class SpatieCleanup implements Flushable
     private static $folders_to_delete = [
         'vendor/spatie/schema-org/generator',
         'vendor/spatie/schema-org/src',
+        'vendor/spatie/schema-org/.git',
     ];
 
     private static $keep_folders = [
@@ -72,7 +74,7 @@ class SpatieCleanup implements Flushable
 
             // Skip directories that are in the keep list
             if (in_array(dirname($file->getRealPath()), $keepFolders, true)) {
-                if(self::DEBUG) {
+                if (self::DEBUG) {
                     DB::alteration_message('Skipping ' . $file->getRealPath(), 'created');
                 }
                 continue;
@@ -81,17 +83,17 @@ class SpatieCleanup implements Flushable
             // Delete files that are not in the keep list
             if ($file->isFile() && !in_array($file->getRealPath(), $keepFiles, true)) {
                 try {
-                    if(self::DEBUG) {
+                    if (self::DEBUG) {
                         DB::alteration_message('DELETING ' . $file->getRealPath(), 'created');
                     }
                     @unlink($file->getRealPath());
                 } catch (Exception $e) {
-                    if(self::DEBUG) {
+                    if (self::DEBUG) {
                         DB::alteration_message('Failed to delete ' . $file->getRealPath() . ': ' . $e->getMessage(), 'deleted');
                     }
                 }
             } else {
-                if(self::DEBUG) {
+                if (self::DEBUG) {
                     DB::alteration_message('Skipping ' . $file->getRealPath(), 'created');
                 }
             }
@@ -117,7 +119,7 @@ class SpatieCleanup implements Flushable
 
     private static function get_real_paths(array $array): array
     {
-        foreach($array as $key => $value) {
+        foreach ($array as $key => $value) {
             $array[$key] = realpath(Controller::join_links(Director::baseFolder(), $value));
         }
         return $array;
@@ -125,7 +127,7 @@ class SpatieCleanup implements Flushable
 
     private static function add_contracts(array $array): array
     {
-        foreach($array as $key => $value) {
+        foreach ($array as $key => $value) {
             $array[] = preg_replace('/\/src\/(.*?)\.php$/', '/src/Contracts/${1}Contract.php', $value);
         }
         return $array;
