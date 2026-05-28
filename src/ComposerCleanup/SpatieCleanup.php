@@ -52,7 +52,7 @@ class SpatieCleanup implements Flushable
 
     public static function flush()
     {
-        if (Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES') === 'true') {
+        if (Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES') === 'true' || Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES') === '1' || Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES') === true) {
             if (self::DEBUG) {
                 DB::alteration_message('Keeping files as per environment variable', 'created');
             }
