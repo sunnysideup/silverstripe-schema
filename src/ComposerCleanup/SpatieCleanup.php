@@ -20,6 +20,7 @@ use SilverStripe\Core\Environment;
 use SilverStripe\Core\Flushable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\DB;
+use Throwable;
 
 class SpatieCleanup implements Flushable
 {
@@ -118,7 +119,19 @@ class SpatieCleanup implements Flushable
             if ($fileInfo->isDir()) {
                 $folderContents = scandir($fileInfo->getRealPath());
                 if ($folderContents !== false && count($folderContents) == 2) { // Only '.' and '..'
-                    rmdir($fileInfo->getRealPath());
+                    $path = $fileInfo->getRealPath();
+
+                    // @ suppresses the native E_WARNING
+                    // rmdir returns false if it fails
+                    if (!@rmdir($path)) {
+                        if (self::DEBUG) {
+                            // Grab the suppressed error message so you can still log it
+                            $error = error_get_last();
+                            $errorMessage = $error ? $error['message'] : 'Permission denied or directory not empty';
+
+                            DB::alteration_message('Failed to delete directory ' . $path . ': ' . $errorMessage, 'deleted');
+                        }
+                    }
                 }
             }
         }
