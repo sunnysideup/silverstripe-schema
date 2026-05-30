@@ -161,12 +161,12 @@ class SchemaExtension extends DataExtension
                 ),
                 ExpandableArrayListField::create(
                     'ExploreData',
-                    'List of Actual Data',
+                    'Explore Schema.org data',
                     $array
-                ),
+                )->setSummaryLabelKeys(['@type']),
                 LiteralField::create(
                     'SchemaDotOrgPrintOutDetails',
-                    '<h2 style="margin-top: 20px">Raw Data</h2><pre>' . json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
+                    '<h2 style="margin-top: 20px">Raw Data</h2><pre style="overflow: hidden">' . json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
                 ),
             ]
         );
