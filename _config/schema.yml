@@ -47,6 +47,8 @@ Broarm\Schema\ComposerCleanup\SpatieCleanup:
   keep_files:
 
     # contracts
+    - 'vendor/spatie/schema-org/src/AboutPage.php'
+    - 'vendor/spatie/schema-org/src/CollectionPage.php'
     - 'vendor/spatie/schema-org/src/Contracts/ItemListContract.php'
     - 'vendor/spatie/schema-org/src/Contracts/IntangibleContract.php'
     - 'vendor/spatie/schema-org/src/Contracts/EnumerationContract.php'
@@ -54,11 +56,12 @@ Broarm\Schema\ComposerCleanup\SpatieCleanup:
     - 'vendor/spatie/schema-org/src/Contracts/ArticleContract.php'
     - 'vendor/spatie/schema-org/src/Contracts/CreativeWorkContract.php'
     - 'vendor/spatie/schema-org/src/Contracts/StructuredValueContract.php'
-    - 'vendor/spatie/schema-org/src/SearchAction.php'
-    - 'vendor/spatie/schema-org/src/AboutPage.php'
+    - 'vendor/spatie/schema-org/src/WebContentContract.php'
+
     - 'vendor/spatie/schema-org/src/WebPage.php'
     - 'vendor/spatie/schema-org/src/WebSite.php'
-    - 'vendor/spatie/schema-org/src/CollectionPage.php'
+
+    - 'vendor/spatie/schema-org/src/SearchAction.php'
 
 #     -  'vendor/spatie/schema-org/src/AboutPage.php'
 #     -  'vendor/spatie/schema-org/src/AcceptAction.php'
