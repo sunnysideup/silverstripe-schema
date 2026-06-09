@@ -11,6 +11,7 @@ namespace Broarm\Schema\Builders;
 
 use Broarm\Schema\SchemaBuilder;
 use DateTimeImmutable;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\i18n\i18n;
 use Spatie\SchemaOrg\WebPage;
 
@@ -27,7 +28,10 @@ class WebPageSchema extends SchemaBuilder
      **/
     public function getSchema($page): WebPage
     {
-
+        $locale = Config::inst()->get(i18n::class, 'default_locale');
+        if ($page->hasMethod('getLocale')) {
+            $locale = $page->getLocale() ?: $locale;
+        }
         $webpage = new WebPage();
         $webpage->name($this->escapeJson($page->Title));
         $webpage->url($page->AbsoluteLink());
@@ -35,7 +39,7 @@ class WebPageSchema extends SchemaBuilder
         $webpage->dateCreated(new DateTimeImmutable((string) $page->Created));
         $webpage->dateModified(new DateTimeImmutable((string) $page->LastEdited));
         $webpage->description($this->escapeJson($page->MetaDescription));
-        $webpage->inLanguage(i18n::get_locale());
+        $webpage->inLanguage($locale);
 
         return $webpage;
     }
