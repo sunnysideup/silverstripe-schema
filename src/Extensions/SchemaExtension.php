@@ -174,7 +174,7 @@ class SchemaExtension extends DataExtension
 
     public function getSchemaTestLink(): string
     {
-        return 'https://validator.schema.org/#' . urlencode($this->getOwner()->AbsoluteLink());
+        return 'https://validator.schema.org/#url=' . urlencode($this->getOwner()->AbsoluteLink());
 
     }
 
