@@ -102,8 +102,13 @@ class SchemaExtension extends DataExtension
      */
     public function getSchemasOrg(): array
     {
+        $owner = $this->getOwner();
         $array = [];
         $schemas = array_filter($this->getOwner()->config()->get('active_schema'));
+        if ($owner->hasMethod('getSchemasOrgOverride')) {
+            $schemas = $owner->getSchemasOrgOverride($schemas);
+        }
+        $schemas = array_unique($schemas);
         foreach ($schemas as $schema) {
             if (class_exists($schema)) {
                 $schemaBuilder = new $schema();
@@ -153,7 +158,7 @@ class SchemaExtension extends DataExtension
             [
                 LiteralField::create(
                     'SchemaDotOrgTestLinkNice',
-                    '<p><h2>Review actual data</h2><a href="' . $this->getSchemaTestLink() . '" target="_blank" rel="noopener noreferrer">Review Schema for ' . $this->getOwner()->Title . '</a></p>'
+                    '<p><h2>Review actual data</h2><a href="' . $this->getSchemaTestLink() . '" target="_blank" rel="noopener noreferrer">Test Schema for ' . $this->getOwner()->Title . ' externally</a> (only works on live site)</p>'
                 ),
                 LiteralField::create(
                     'SchemaDotOrgPrintOutTypes',

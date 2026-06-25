@@ -32,6 +32,7 @@ class WebPageSchema extends SchemaBuilder
         if ($page->hasMethod('getLocale')) {
             $locale = $page->getLocale() ?: $locale;
         }
+        $locale = str_replace('_', '-', $locale);
         $webpage = new WebPage();
         $webpage->name($this->escapeJson($page->Title));
         $webpage->url($page->AbsoluteLink());
