@@ -18,6 +18,8 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
+use Sunnysideup\ArrayToUl\Form\Fields\ExpandableArrayListField;
+use Sunnysideup\ArrayToUl\Form\Fields\ExpandableJsonField;
 use Sunnysideup\ArrayToUl\View\ExpandableArrayList;
 
 /**
@@ -100,8 +102,13 @@ class SchemaExtension extends DataExtension
      */
     public function getSchemasOrg(): array
     {
+        $owner = $this->getOwner();
         $array = [];
         $schemas = array_filter($this->getOwner()->config()->get('active_schema'));
+        if ($owner->hasMethod('getSchemasOrgOverride')) {
+            $schemas = $owner->getSchemasOrgOverride($schemas);
+        }
+        $schemas = array_unique($schemas);
         foreach ($schemas as $schema) {
             if (class_exists($schema)) {
                 $schemaBuilder = new $schema();
@@ -143,21 +150,28 @@ class SchemaExtension extends DataExtension
 
     public function updateCMSFields(FieldList $fields)
     {
-
+        $data = json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $array = json_decode($data, true);
+        $array = $this->beautifySchemaDotOrgData($array);
         $fields->addFieldsToTab(
             'Root.Schema',
             [
                 LiteralField::create(
                     'SchemaDotOrgTestLinkNice',
-                    '<p><h2>Review actual data</h2><a href="' . $this->getSchemaTestLink() . '" target="_blank" rel="noopener noreferrer">Review Schema for ' . $this->getOwner()->Title . '</a></p>'
+                    '<p><h2>Review actual data</h2><a href="' . $this->getSchemaTestLink() . '" target="_blank" rel="noopener noreferrer">Test Schema for ' . $this->getOwner()->Title . ' externally</a> (only works on live site)</p>'
                 ),
                 LiteralField::create(
                     'SchemaDotOrgPrintOutTypes',
                     '<h2 style="margin-top: 20px">Schema Types</h2>' . ExpandableArrayList::create($this->getSchemaOrgHumanReadable())->setAllowHtmlAsIs(true)->forTemplate()
                 ),
+                ExpandableArrayListField::create(
+                    'ExploreData',
+                    'Explore Schema.org data',
+                    $array
+                )->setSummaryLabelKeys(['@type']),
                 LiteralField::create(
                     'SchemaDotOrgPrintOutDetails',
-                    '<h2 style="margin-top: 20px">List of Actual Data</h2><pre>' . json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
+                    '<h2 style="margin-top: 20px">Raw Data</h2><pre style="overflow: hidden">' . json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '</pre>'
                 ),
             ]
         );
@@ -165,8 +179,24 @@ class SchemaExtension extends DataExtension
 
     public function getSchemaTestLink(): string
     {
-        return 'https://validator.schema.org/#' . urlencode($this->getOwner()->AbsoluteLink());
+        return 'https://validator.schema.org/#url=' . urlencode($this->getOwner()->AbsoluteLink());
 
+    }
+
+    protected function beautifySchemaDotOrgData(array $data): array
+    {
+        foreach ($data as $key => &$value) {
+            if (is_array($value)) {
+                $value = $this->beautifySchemaDotOrgData($value);
+            } elseif ($key === '@context') {
+                unset($data[$key]);
+            }
+            // elseif ($key === '@type') {
+            //     $value = "<b style=\"color: var(--pink, #e83e8c);\">$value</b>";
+            // } else
+        }
+        unset($value);
+        return $data;
     }
 
     protected function getSchemaOrgTestData(): array

@@ -93,10 +93,9 @@ abstract class SchemaBuilder implements Flushable
 
     public function escapeJson($string): string
     {
-        $string = (string) $string;
-        $string = json_encode($string, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_HEX_APOS);
-        $string = trim($string, '"');
-        return $string;
+        $string = strip_tags((string) $string);
+        $string = preg_replace('/\s+/', ' ', $string);
+        return trim($string);
     }
 
     public static function flush()

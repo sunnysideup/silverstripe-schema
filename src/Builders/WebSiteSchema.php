@@ -1,21 +1,14 @@
 <?php
-/**
- * Website.php
- *
- * @author Bram de Leeuw
- * Date: 04/11/16
- */
 
 namespace Broarm\Schema\Builders;
 
 use Broarm\Schema\SchemaBuilder;
 use SilverStripe\Control\Director;
-use SilverStripe\Core\Convert;
 use SilverStripe\SiteConfig\SiteConfig;
 use Spatie\SchemaOrg\WebSite as SchemaOrgWebSite;
 
 /**
- * Class Website
+ * Class WebSiteSchema
  */
 class WebSiteSchema extends SchemaBuilder
 {

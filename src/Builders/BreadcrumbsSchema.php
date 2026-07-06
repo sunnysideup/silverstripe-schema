@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Breadcrumbs.php
  *
@@ -9,7 +10,6 @@
 namespace Broarm\Schema\Builders;
 
 use Broarm\Schema\SchemaBuilder;
-use SilverStripe\Core\Convert;
 use Spatie\SchemaOrg\BreadcrumbList;
 use Spatie\SchemaOrg\ListItem;
 
