@@ -37,9 +37,11 @@ class BreadcrumbsSchema extends SchemaBuilder
                 $breadcrumb->position($pos + 1);
                 $breadcrumbs[] = $breadcrumb;
             }
+
             $obj->itemListElement($breadcrumbs);
             return $obj;
         }
+
         return null;
     }
 }

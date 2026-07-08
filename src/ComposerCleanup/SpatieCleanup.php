@@ -20,14 +20,13 @@ use SilverStripe\Core\Environment;
 use SilverStripe\Core\Flushable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\DB;
-use Throwable;
 
 class SpatieCleanup implements Flushable
 {
     use Configurable;
     use Injectable;
 
-    private const DEBUG = false;
+    private const bool DEBUG = false;
 
     private static $folders_to_delete = [
         'vendor/spatie/schema-org/generator',
@@ -52,12 +51,14 @@ class SpatieCleanup implements Flushable
 
     public static function flush()
     {
-        if (Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES') === 'true' || Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES') === '1' || Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES') === true) {
+        if (in_array(Environment::getEnv('SS_SCHEMA_ORG_KEEP_FILES'), ['true', '1', true], true)) {
             if (self::DEBUG) {
                 DB::alteration_message('Keeping files as per environment variable', 'created');
             }
+
             return;
         }
+
         $config = self::config();
         $foldersToDelete = self::get_real_paths($config->get('folders_to_delete'));
         $keepFolders = self::get_real_paths($config->get('keep_folders'));
@@ -70,6 +71,7 @@ class SpatieCleanup implements Flushable
             self::delete_files($folder, $keepFolders, $keepFiles);
             self::delete_empty_dirs($folder);
         }
+
         exec('composer dump-autoload');
     }
 
@@ -79,18 +81,21 @@ class SpatieCleanup implements Flushable
             if (self::DEBUG) {
                 DB::alteration_message('Directory does not exist: ' . $directory, 'deleted');
             }
+
             return;
         }
+
         $directoryIterator = new RecursiveDirectoryIterator($directory);
         $iterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::LEAVES_ONLY);
 
         foreach ($iterator as $file) {
 
             // Skip directories that are in the keep list
-            if (in_array(dirname($file->getRealPath()), $keepFolders, true)) {
+            if (in_array(dirname((string) $file->getRealPath()), $keepFolders, true)) {
                 if (self::DEBUG) {
                     DB::alteration_message('Skipping ' . $file->getRealPath(), 'created');
                 }
+
                 continue;
             }
 
@@ -100,16 +105,15 @@ class SpatieCleanup implements Flushable
                     if (self::DEBUG) {
                         DB::alteration_message('DELETING ' . $file->getRealPath(), 'created');
                     }
+
                     @unlink($file->getRealPath());
                 } catch (Exception $e) {
                     if (self::DEBUG) {
                         DB::alteration_message('Failed to delete ' . $file->getRealPath() . ': ' . $e->getMessage(), 'deleted');
                     }
                 }
-            } else {
-                if (self::DEBUG) {
-                    DB::alteration_message('Skipping ' . $file->getRealPath(), 'created');
-                }
+            } elseif (self::DEBUG) {
+                DB::alteration_message('Skipping ' . $file->getRealPath(), 'created');
             }
         }
     }
@@ -124,19 +128,16 @@ class SpatieCleanup implements Flushable
         foreach ($iterator as $fileInfo) {
             if ($fileInfo->isDir()) {
                 $folderContents = scandir($fileInfo->getRealPath());
-                if ($folderContents !== false && count($folderContents) == 2) { // Only '.' and '..'
+                if ($folderContents !== false && count($folderContents) === 2) { // Only '.' and '..'
                     $path = $fileInfo->getRealPath();
 
                     // @ suppresses the native E_WARNING
                     // rmdir returns false if it fails
-                    if (!@rmdir($path)) {
-                        if (self::DEBUG) {
-                            // Grab the suppressed error message so you can still log it
-                            $error = error_get_last();
-                            $errorMessage = $error ? $error['message'] : 'Permission denied or directory not empty';
-
-                            DB::alteration_message('Failed to delete directory ' . $path . ': ' . $errorMessage, 'deleted');
-                        }
+                    if (!@rmdir($path) && self::DEBUG) {
+                        // Grab the suppressed error message so you can still log it
+                        $error = error_get_last();
+                        $errorMessage = $error ? $error['message'] : 'Permission denied or directory not empty';
+                        DB::alteration_message('Failed to delete directory ' . $path . ': ' . $errorMessage, 'deleted');
                     }
                 }
             }
@@ -148,14 +149,16 @@ class SpatieCleanup implements Flushable
         foreach ($array as $key => $value) {
             $array[$key] = realpath(Controller::join_links(Director::baseFolder(), $value));
         }
+
         return $array;
     }
 
     private static function add_contracts(array $array): array
     {
         foreach ($array as $key => $value) {
-            $array[] = preg_replace('/\/src\/(.*?)\.php$/', '/src/Contracts/${1}Contract.php', $value);
+            $array[] = preg_replace('/\/src\/(.*?)\.php$/', '/src/Contracts/${1}Contract.php', (string) $value);
         }
+
         return $array;
     }
 

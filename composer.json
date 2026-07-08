@@ -17,9 +17,9 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "^4 || ^5",
-        "spatie/schema-org": "^4",
-        "sunnysideup/array2ul": "dev-main"
+        "silverstripe/framework": "^6.0",
+        "sunnysideup/array2ul": "dev-main",
+        "spatie/schema-org": "^4"
     },
     "autoload": {
         "psr-4": {
