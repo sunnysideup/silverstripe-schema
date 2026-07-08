@@ -18,18 +18,12 @@
     ],
     "require": {
         "silverstripe/framework": "^6.0",
+        "sunnysideup/array2ul": "dev-main",
         "spatie/schema-org": "^4"
     },
     "autoload": {
         "psr-4": {
             "Broarm\\Schema\\": "src"
-        }
-    },
-    "yet-to-update": {
-        "sunnysideup/array2ul": {
-            "section": "require",
-            "current": "dev-main",
-            "reason": "no-compatible-stable-release"
         }
     }
 }
