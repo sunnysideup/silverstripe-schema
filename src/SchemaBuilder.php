@@ -13,7 +13,6 @@ use Psr\SimpleCache\CacheInterface;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Flushable;
 use SilverStripe\Core\Injector\Injector;
-use Spatie\SchemaOrg\Base;
 use Spatie\SchemaOrg\BaseType;
 
 /**
@@ -31,24 +30,26 @@ abstract class SchemaBuilder implements Flushable
 
     public function getSchemaFromCache($page): ?array
     {
-        $objectClassName = get_class($page);
+        $objectClassName = $page::class;
         $objectId = $page->ID;
-        $schemaClassName = get_class($this);
+        $schemaClassName = static::class;
         $schema = self::get_schema_from_cache($objectClassName, $objectId, $schemaClassName);
         $array = null;
         if ($schema === null) {
             $schema = $this->getSchema($page);
             if ($schema && is_array($schema) === false) {
                 $array = $schema->toArray();
-            } elseif ($schema) {
+            } elseif ($schema !== []) {
                 $array = $schema;
             } else {
                 $array = null;
             }
+
             self::set_schema_in_cache($objectClassName, $objectId, $schemaClassName, $array);
         } elseif (is_array($schema)) {
             $array = $schema;
         }
+
         return $array;
     }
 
@@ -63,10 +64,11 @@ abstract class SchemaBuilder implements Flushable
         $key = self::make_cache_key($objectClassName, $objectId, $schemaClassName);
         /** @var CacheInterface $cache */
         $cache = Injector::inst()->get(CacheInterface::class . '.schema_org');
-        if ((bool) $cache->has($key) !== false) {
+        if ((bool) $cache->has($key)) {
             $return = unserialize((string) $cache->get($key));
             return is_array($return) ? $return : null;
         }
+
         return null;
     }
 
@@ -95,7 +97,7 @@ abstract class SchemaBuilder implements Flushable
     {
         $string = strip_tags((string) $string);
         $string = preg_replace('/\s+/', ' ', $string);
-        return trim($string);
+        return trim((string) $string);
     }
 
     public static function flush()
@@ -108,7 +110,7 @@ abstract class SchemaBuilder implements Flushable
         $infoLink = '';
         $test = $this->getSchema($object);
         if ($test) {
-            $testClassName = get_class($test);
+            $testClassName = $test::class;
             if ($testClassName) {
                 $shortClassName = ClassInfo::shortName($testClassName);
                 $infoLinkUrl = 'https://schema.org/' . $shortClassName;
@@ -118,6 +120,7 @@ abstract class SchemaBuilder implements Flushable
                 return 'Error: could not generate schema';
             }
         }
+
         return null;
     }
 

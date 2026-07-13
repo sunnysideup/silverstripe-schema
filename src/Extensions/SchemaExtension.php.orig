@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD
 
 /**
  * SchemaExtension.php
@@ -9,27 +10,36 @@
 
 namespace Broarm\Schema;
 
-use SilverStripe\Core\Extension;
 use Broarm\Schema\SchemaBuilder;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\ORM\DataExtension;
 use SilverStripe\Versioned\Versioned;
+=======
+
+namespace Broarm\Schema;
+
+use Broarm\Schema\Builder\SchemaBuilder;
+use SilverStripe\Core\Extension;
+>>>>>>> bc20d62ba315adffb1d0590ee9d8c4c8f769042d
 use SilverStripe\View\Requirements;
 use Sunnysideup\ArrayToUl\Form\Fields\ExpandableArrayListField;
+use Sunnysideup\ArrayToUl\Form\Fields\ExpandableJsonField;
 use Sunnysideup\ArrayToUl\View\ExpandableArrayList;
 
-/**
- * SchemaExtension
- */
 class SchemaExtension extends Extension
 {
+<<<<<<< HEAD
     private static $exempted_get_vars = [
         'start',
         'flush',
     ];
 
+=======
+>>>>>>> bc20d62ba315adffb1d0590ee9d8c4c8f769042d
     /**
      * Hook onto the page meta tags and append any configured schema objects
      * fixme: does not trigger correctly on DataObjects pages
@@ -39,31 +49,29 @@ class SchemaExtension extends Extension
     public function updateMetaTags(&$tags)
     {
         $curr = Controller::curr();
-        if ($curr instanceof Controller) {
+        if ($curr) {
             $request = Controller::curr()->getRequest();
             if ($request) {
                 if ($request->isAjax()) {
                     return;
                 }
-
                 if ($request->param('Action')) {
                     return;
                 }
-
                 $postVars = $request->postVars();
                 if (! empty($postVars)) {
                     return;
                 }
-
                 $getVars = $request->getVars();
                 if (! empty($getVars)) {
                     if (count($_GET) > 1) {
                         return;
-                    } elseif (array_intersect(array_keys($getVars), Config::inst()->get(static::class, 'exempted_get_vars')) !== []) {
-                        return;
+                    } else {
+                        if (!empty(array_intersect(array_keys($getVars), Config::inst()->get(static::class, 'exempted_get_vars')))) {
+                            return;
+                        }
                     }
                 }
-
                 $schemaBuilders = $this->getSchemasOrg();
                 /** @var SchemaBuilder $schemaBuilder */
                 foreach ($schemaBuilders as $schemaBuilder) {
@@ -72,7 +80,6 @@ class SchemaExtension extends Extension
             }
         }
     }
-
 
     /**
      * Append a schema ld+json tag
@@ -89,7 +96,7 @@ class SchemaExtension extends Extension
                 $string = str_replace('$', '&#36;', json_encode($array, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
                 Requirements::insertHeadTags(
                     '<script type="application/ld+json">' . $string . '</script>',
-                    $schemaBuilder::class
+                    get_class($schemaBuilder)
                 );
             }
         }
@@ -108,7 +115,6 @@ class SchemaExtension extends Extension
         if ($owner->hasMethod('getSchemasOrgOverride')) {
             $schemas = $owner->getSchemasOrgOverride($schemas);
         }
-
         $schemas = array_unique($schemas);
         foreach ($schemas as $schema) {
             if (class_exists($schema)) {
@@ -120,9 +126,9 @@ class SchemaExtension extends Extension
                 user_error('Schema class ' . $schema . ' does not exist', E_USER_WARNING);
             }
         }
-
         return $array;
     }
+<<<<<<< HEAD
 
     public function getSchemaOrgHumanReadable(): array
     {
@@ -134,7 +140,6 @@ class SchemaExtension extends Extension
                 $list[] = $v;
             }
         }
-
         return $list;
     }
 
@@ -156,7 +161,6 @@ class SchemaExtension extends Extension
         $data = json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $array = json_decode($data, true);
         $array = $this->beautifySchemaDotOrgData($array);
-
         $fields->addFieldsToTab(
             'Root.Schema',
             [
@@ -183,7 +187,7 @@ class SchemaExtension extends Extension
 
     public function getSchemaTestLink(): string
     {
-        return 'https://validator.schema.org/#url=' . urlencode((string) $this->getOwner()->AbsoluteLink());
+        return 'https://validator.schema.org/#url=' . urlencode($this->getOwner()->AbsoluteLink());
 
     }
 
@@ -195,12 +199,10 @@ class SchemaExtension extends Extension
             } elseif ($key === '@context') {
                 unset($data[$key]);
             }
-
             // elseif ($key === '@type') {
             //     $value = "<b style=\"color: var(--pink, #e83e8c);\">$value</b>";
             // } else
         }
-
         unset($value);
         return $data;
     }
@@ -220,7 +222,6 @@ class SchemaExtension extends Extension
                 }
             }
         }
-
         return $all;
     }
 
@@ -230,4 +231,6 @@ class SchemaExtension extends Extension
     }
 
 
+=======
+>>>>>>> bc20d62ba315adffb1d0590ee9d8c4c8f769042d
 }
