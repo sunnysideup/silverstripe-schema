@@ -19,7 +19,7 @@
     "require": {
         "silverstripe/framework": "^4 || ^5",
         "spatie/schema-org": "^4",
-        "sunnysideup/array2ul": "dev-main"
+        "sunnysideup/array2ul": "5.x-dev"
     },
     "autoload": {
         "psr-4": {
