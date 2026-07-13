@@ -2,6 +2,7 @@
 
 namespace Broarm\Schema\Builders;
 
+use Page;
 use Broarm\Schema\SchemaBuilder;
 use SilverStripe\Control\Director;
 use SilverStripe\SiteConfig\SiteConfig;
@@ -15,8 +16,7 @@ class WebSiteSchema extends SchemaBuilder
     /**
      * Create the website schema object
      *
-     * @param \Page $page
-     *
+     * @param Page $page
      **/
     public function getSchema($page): ?SchemaOrgWebSite
     {
@@ -28,6 +28,7 @@ class WebSiteSchema extends SchemaBuilder
 
             return $website;
         }
+
         return null;
     }
 }

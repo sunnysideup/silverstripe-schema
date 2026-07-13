@@ -1,29 +1,29 @@
 {
-  "name": "bramdeleeuw/silverstripe-schema",
-  "description": "Add schema to a Silverstripe page",
-  "type": "silverstripe-vendormodule",
-  "keywords": [
-    "silverstripe",
-    "schema",
-    "schema.org",
-    "structured data",
-    "knowledge graph"
-  ],
-  "license": "BSD-3-Clause",
-  "authors": [
-    {
-      "name": "Bram de Leeuw",
-      "email": "bram@broarm.nl"
+    "name": "bramdeleeuw/silverstripe-schema",
+    "description": "Add schema to a Silverstripe page",
+    "type": "silverstripe-vendormodule",
+    "keywords": [
+        "silverstripe",
+        "schema",
+        "schema.org",
+        "structured data",
+        "knowledge graph"
+    ],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Bram de Leeuw",
+            "email": "bram@broarm.nl"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "^4 || ^5",
+        "spatie/schema-org": "^4",
+        "sunnysideup/array2ul": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "Broarm\\Schema\\": "src"
+        }
     }
-  ],
-  "require": {
-    "silverstripe/framework": "^4 || ^5",
-    "spatie/schema-org": "^4",
-    "sunnysideup/array2ul": "5.x-dev"
-  },
-  "autoload": {
-    "psr-4": {
-      "Broarm\\Schema\\": "src"
-    }
-  }
 }

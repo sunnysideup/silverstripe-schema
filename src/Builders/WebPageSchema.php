@@ -9,6 +9,7 @@
 
 namespace Broarm\Schema\Builders;
 
+use Page;
 use Broarm\Schema\SchemaBuilder;
 use DateTimeImmutable;
 use SilverStripe\Core\Config\Config;
@@ -23,8 +24,7 @@ class WebPageSchema extends SchemaBuilder
     /**
      * Create the website schema object
      *
-     * @param \Page $page
-     *
+     * @param Page $page
      **/
     public function getSchema($page): WebPage
     {
@@ -32,6 +32,7 @@ class WebPageSchema extends SchemaBuilder
         if ($page->hasMethod('getLocale')) {
             $locale = $page->getLocale() ?: $locale;
         }
+
         $locale = str_replace('_', '-', $locale);
         $webpage = new WebPage();
         $webpage->name($this->escapeJson($page->Title));
