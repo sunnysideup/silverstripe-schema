@@ -1,43 +1,18 @@
 ---
 Name: schema
 ---
-SilverStripe\Core\Injector\Injector:
-  Psr\SimpleCache\CacheInterface.schema_org:
-    factory: SilverStripe\Core\Cache\CacheFactory
-    constructor:
-      namespace: 'schema_org'
-    defaultLifetime: 864000
-
-##########################
-## # Home Page Only
-##########################
-
-# MyHomePage:
-#   active_schema:
-#     - 'Broarm\Schema\Builders\WebSiteSchema'
-
-
-##########################
-## # All Pages
-##########################
-
-
 Page:
   # default_image: 'path/to/logo.png'
   extensions:
     - 'Broarm\Schema\SchemaExtension'
   active_schema:
-    # - 'Broarm\Schema\Builders\WebSiteSchema'
-    - 'Broarm\Schema\Builders\WebPageSchema'
-    - 'Broarm\Schema\Builders\BreadcrumbsSchema'
+    local_business: 'Broarm\Schema\Builder\LocalBusiness'
+    website: 'Broarm\Schema\Builder\Website'
+    breadcrumbs: 'Broarm\Schema\Builder\Breadcrumbs'
 
-##########################
-# ## Other Pages
-##########################
-
-# SilverStripe\Blog\Model\BlogPost:
-#   active_schema:
-#     - 'Broarm\Schema\Builder\NewsArticle'
+#SilverStripe\Blog\Model\BlogPost:
+#  active_schema:
+#    newsArticle: 'Broarm\Schema\Builder\NewsArticle'
 
 ##########################
 # turn on more schema types

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * SchemaExtension.php
- *
- * @author Bram de Leeuw
- * Date: 03/11/16
- */
 
 namespace Broarm\Schema;
 
@@ -15,17 +9,14 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
 use Sunnysideup\ArrayToUl\Form\Fields\ExpandableArrayListField;
 use Sunnysideup\ArrayToUl\Form\Fields\ExpandableJsonField;
 use Sunnysideup\ArrayToUl\View\ExpandableArrayList;
 
-/**
- * SchemaExtension
- */
-class SchemaExtension extends DataExtension
+class SchemaExtension extends Extension
 {
     private static $exempted_get_vars = [
         'start',
@@ -38,7 +29,7 @@ class SchemaExtension extends DataExtension
      *
      * @param $tags
      */
-    public function MetaTags(&$tags)
+    public function updateMetaTags(&$tags)
     {
         $curr = Controller::curr();
         if ($curr) {
@@ -80,7 +71,7 @@ class SchemaExtension extends DataExtension
      * @param $tags
      * @param $schema
      */
-    private function appendSchemaOrg(&$tags, $schemaBuilder)
+    private function appendSchema(&$tags, SchemaBuilder $schema)
     {
         if ($schemaBuilder) {
             $owner = $this->getOwner();
@@ -217,9 +208,16 @@ class SchemaExtension extends DataExtension
         return $all;
     }
 
-    protected function todo()
+    /**
+     * Check if the set schema is of an active and available type
+     *
+     * @param $schema
+     *
+     * @return bool
+     */
+    private static function is_valid($schema)
     {
-
+        return class_exists($schema) && new $schema() instanceof SchemaBuilder;
     }
 
 
