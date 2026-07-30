@@ -116,6 +116,13 @@ class SpatieCleanup implements Flushable
 
     private static function delete_empty_dirs(string $directory): void
     {
+        if (! $directory || !is_dir($directory)) {
+            if (self::DEBUG) {
+                DB::alteration_message('Directory does not exist: ' . $directory, 'deleted');
+            }
+            return;
+        }
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST
