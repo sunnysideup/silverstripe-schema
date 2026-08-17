@@ -93,7 +93,7 @@ abstract class SchemaBuilder implements Flushable
 
     public function escapeJson($string): string
     {
-        $string = strip_tags((string) $string);
+        $string = $this->htmlToPlainText((string) $string);
         $string = preg_replace('/\s+/', ' ', $string);
         return trim($string);
     }
@@ -119,6 +119,14 @@ abstract class SchemaBuilder implements Flushable
             }
         }
         return null;
+    }
+
+    private function htmlToPlainText(string $html): string
+    {
+        $html = preg_replace('#<(br|/p|/h[1-6]|/div|/li|/tr|/td|/blockquote)[^>]*>#i', ' ', $html);
+        $text = strip_tags($html);
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return trim(preg_replace('/\s+/', ' ', $text));
     }
 
 
