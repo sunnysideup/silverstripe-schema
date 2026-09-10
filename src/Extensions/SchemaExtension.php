@@ -17,6 +17,7 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\VersionedAdmin\Controllers\HistoryViewerController;
 use SilverStripe\View\Requirements;
 use Sunnysideup\ArrayToUl\Form\Fields\ExpandableArrayListField;
 use Sunnysideup\ArrayToUl\Form\Fields\ExpandableJsonField;
@@ -150,6 +151,9 @@ class SchemaExtension extends DataExtension
 
     public function updateCMSFields(FieldList $fields)
     {
+        if (Controller::curr() instanceof HistoryViewerController) {
+            return;
+        }
         $data = json_encode($this->getSchemaOrgTestData(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $array = json_decode($data, true);
         $array = $this->beautifySchemaDotOrgData($array);
